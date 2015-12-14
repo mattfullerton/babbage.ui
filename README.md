@@ -1,5 +1,7 @@
 # babbage.ui
 
+THIS FORK IS PART OF A PROOF OF CONCEPT.
+
 The library provides a DSL, query frontend and visualisation functions running against the [Babbage Analytical Engine](https://github.com/spendb/babbage) API. The intent is to make a re-usable set of angular-based front-end
 components for business intelligence.
 
