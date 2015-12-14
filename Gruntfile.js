@@ -112,7 +112,7 @@ module.exports = function(grunt) {
     watch: {
       templates: {
         files: ['templates/**/*.html'],
-        tasks: ['html2js']
+        tasks: ['html2js', 'concat', 'uglify:app']
       },
       js: {
         files: ['src/**/*.js'],

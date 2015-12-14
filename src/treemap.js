@@ -40,7 +40,7 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
       q.order = order;
       q.page = 0;
       q.pagesize = 50;
-
+      
       scope.cutoffWarning = false;
       scope.queryLoaded = true;
       var dfd = $http.get(babbageCtrl.getApiUrl('aggregate'),
@@ -67,6 +67,35 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
     };
 
     var queryResult = function(data, q, model, state) {
+      var drilldown = q.drilldown && q.drilldown.split("\.");
+      if (drilldown && drilldown.length > 0) {
+        drilldown = drilldown[0];
+      }
+      var next = undefined;
+      switch (drilldown) {
+        //Idea: Include E/A in the treemap to show the "schwarze Null"
+        //case "einnahmeausgabe":
+          //next = "einzelplan.einzelplanbezeichnung";
+          //break;
+        case "einzelplan":
+          next = "kapitel.kapitelbezeichnung";
+          break;
+        case "kapitel":
+          next = "zweckbestimmung.zweckbestimmung";
+          break;
+        case "hauptgruppe":
+          next = "obergruppe.obergruppenbezeichnung";
+          break;
+        case "obergruppe":
+          next = "gruppe.gruppenbezeichnung";
+          break;
+        case "hauptfunktion":
+          next = "oberfunktion.oberfunktionbezeichnung";
+          break;
+        case "oberfunktion":
+          next = "funktion.funktionbezeichnung";
+          break;
+      }
       var tileRef = asArray(state.tile)[0],
           areaRef = asArray(state.area)[0],
           areaRef = areaRef ? [areaRef] : defaultArea(model);
@@ -86,7 +115,7 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
 
       var node = div.datum(root).selectAll(".node")
           .data(treemap.nodes)
-        .enter().append("a")
+          .enter().append("a")
           .attr("href", function(d){ return d.href; })
           .attr("class", "node")
           .call(positionNode)
@@ -104,6 +133,17 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
           .on("mouseout", function(d) {
             d3.select(this).transition().duration(500)
               .style({'background': d._color});
+          })
+          .on("click", function(d) {
+            if (typeof(state.cut) == "object") state.cut.push(state.tile + ":" + d[state.tile]);
+            else if (typeof(state.cut) == "string") {
+              var items = new Array();
+              items.push(state.cut);
+              items.push(state.tile + ":" + d[state.tile]);
+              state.cut = items;
+            }
+            state.tile = next;
+            query(model, state);
           })
           .transition()
           .duration(500)

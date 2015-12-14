@@ -42,6 +42,8 @@ ngBabbage.directive('babbagePanel', ['$rootScope', 'slugifyFilter', function($ro
           axis.selected.splice(i, 1);
           $scope.state[axis.name] = axis.selected;
           $scope.state.order = babbageCtrl.removeSorts(ref);
+          //If switching to new view, reset to only one cut
+          $scope.state.cut = "einnahmeausgabe.einnahmeausgabe:Ausgabe";
           update();
         }
       };
@@ -149,6 +151,7 @@ ngBabbage.directive('babbagePanel', ['$rootScope', 'slugifyFilter', function($ro
 
       var loadFilters = function(state) {
         var cuts = asArray(state.cut);
+    
         for (var i in cuts) {
           var cut = cuts[i];
           if (cut.indexOf(':') != -1) {
@@ -208,6 +211,26 @@ ngBabbage.directive('babbagePanel', ['$rootScope', 'slugifyFilter', function($ro
 
       var unsubscribe = babbageCtrl.subscribe(function(event, mdl, state) {
         model = mdl;
+        var desiredstart = "einnahmeausgabe.einnahmeausgabe:Ausgabe";
+        if (typeof(state.cut) == "object") {
+          var notset = true;
+          for (var i = 0; i < state.cut.length; i++) {
+            if (state.cut[i].indexOf("einnahmeausgabe") > -1) {
+              notset = false;
+            }
+          }
+          if (notset) state.cut.push(desiredstart);
+        }
+        else if (typeof(state.cut) == "string") {
+          //Actually this shouldn't be possible; if there's only one then it must be e/a
+          if (state.cut.indexOf("einnahmeausgabe") == -1) {
+            var items = new Array();
+            items.push(state.cut);
+            items.push(desiredstart);
+            state.cut = items;
+          }
+        }
+        else state.cut = desiredstart;
         $scope.state = state;
 
         var options = makeOptions();

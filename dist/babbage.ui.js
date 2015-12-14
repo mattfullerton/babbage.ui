@@ -27,7 +27,7 @@ angular.module("babbage-templates/pager.html", []).run(["$templateCache", functi
 
 angular.module("babbage-templates/panel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("babbage-templates/panel.html",
-    "<div class=\"panel panel-default\" ng-repeat=\"axis in axes\"><div class=\"panel-heading\"><strong>{{axis.label}}</strong><div class=\"btn-group\" dropdown ng-show=\"axis.available.length\">&mdash; <a dropdown-toggle class=\"ng-link\">{{axis.addLabel}}</a><ul class=\"dropdown-menu\" role=\"menu\"><li ng-repeat=\"opt in axis.available\"><a ng-click=\"add(axis, opt.ref)\"><strong>{{opt.label}}</strong> {{opt.subLabel}}</a></li></ul></div></div><table class=\"table\"><tr ng-repeat=\"opt in axis.active\"><td colspan=\"2\"><div class=\"pull-right\"><span ng-switch=\"getSort(opt.ref).direction\"><a ng-switch-when=\"desc\" ng-click=\"pushSort(opt.ref, 'asc')\" class=\"ng-link ng-icon\"><i class=\"fa fa-sort-amount-desc\"></i></a> <a ng-switch-when=\"asc\" ng-click=\"pushSort(opt.ref, 'desc')\" class=\"ng-link ng-icon\"><i class=\"fa fa-sort-amount-asc\"></i></a> <a ng-switch-default ng-click=\"pushSort(opt.ref, 'desc')\" class=\"ng-link ng-icon\"><i class=\"fa fa-sort-amount-desc\"></i></a></span> <a ng-click=\"remove(axis, opt.ref)\" ng-show=\"axis.remove\" class=\"ng-link ng-icon\"><i class=\"fa fa-times\"></i></a></div><strong>{{opt.label}}</strong> {{opt.subLabel}}</td></tr></table></div><div class=\"panel panel-default\"><div class=\"panel-heading\"><strong>Filters</strong><div class=\"btn-group\" dropdown ng-show=\"filterAttributes.length\">&mdash; <a dropdown-toggle class=\"ng-link\">add filter</a><ul class=\"dropdown-menu\" role=\"menu\"><li ng-repeat=\"attr in filterAttributes\"><a ng-click=\"addFilter(attr)\"><strong>{{attr.label}}</strong> {{attr.subLabel}}</a></li></ul></div></div><table class=\"table table-panel\"><tbody ng-repeat=\"filter in filters\"><tr><td colspan=\"2\"><strong>{{filter.attr.label}}</strong> {{filter.attr.subLabel}}</td><td width=\"1%\"><span class=\"pull-right\"><a ng-click=\"removeFilter(filter)\" class=\"ng-link\"><i class=\"fa fa-times\"></i></a></span></td></tr><tr class=\"adjoined\"><td width=\"1%\" class=\"middle\">is</td><td width=\"95%\"><ui-select ng-model=\"filter.value\" disable-search=\"false\" on-select=\"setFilter(filter, $item, $model)\"><ui-select-match placeholder=\"Pick one...\">{{$select.selected}}</ui-select-match><ui-select-choices repeat=\"v as v in filter.values | filter: $select.search track by $index\"><div ng-bind=\"v\"></div></ui-select-choices></ui-select></td><td class=\"middle\"></td></tr></tbody></table></div>");
+    "<div class=\"panel panel-default\" ng-repeat=\"axis in axes\"><div class=\"panel-heading\" ng-if=\"axis.label == 'Tiles'\"><strong>Anzeige nach:</strong><div class=\"btn-group\" dropdown ng-show=\"axis.available.length\">&nbsp;&nbsp; <a dropdown-toggle class=\"ng-link\">&#x21d3;</a><ul class=\"dropdown-menu\" role=\"menu\"><li ng-repeat=\"opt in axis.available\"><a ng-click=\"add(axis, opt.ref)\" ng-if=\"['Einzelplanbezeichnung', 'Hauptgruppenbezeichnung', 'Hauptfunktionbezeichnung'].indexOf(opt.subLabel) > -1\"><strong ng-if=\"opt.subLabel == 'Einzelplanbezeichnung'\">Organisation</strong> <strong ng-if=\"opt.subLabel == 'Hauptgruppenbezeichnung'\">Gruppe</strong> <strong ng-if=\"opt.subLabel == 'Hauptfunktionbezeichnung'\">Funktion</strong></a></li></ul></div></div><table class=\"table\" ng-if=\"axis.label == 'Tiles'\"><tr ng-repeat=\"opt in axis.active\"><td colspan=\"2\"><div class=\"pull-right\"><a ng-click=\"remove(axis, opt.ref)\" ng-show=\"axis.remove\" class=\"ng-link ng-icon\"><i class=\"fa fa-times\"></i></a></div><strong ng-if=\"opt.subLabel == 'Einzelplanbezeichnung'\">Organisation</strong> <strong ng-if=\"opt.subLabel == 'Hauptgruppenbezeichnung'\">Gruppe</strong> <strong ng-if=\"opt.subLabel == 'Hauptfunktionbezeichnung'\">Funktion</strong></td></tr></table></div><div class=\"panel panel-default\"><div class=\"panel-heading\"><strong>Einnahmen oder Ausgaben</strong><div class=\"btn-group\" dropdown ng-show=\"filterAttributes.length\"></div></div><table class=\"table table-panel\"><tbody ng-repeat=\"filter in filters\"><tr><td colspan=\"2\"></td><td width=\"1%\"></td></tr><tr class=\"adjoined\"><td width=\"0%\" class=\"middle\"></td><td width=\"95%\"><ui-select ng-model=\"filter.value\" disable-search=\"false\" on-select=\"setFilter(filter, $item, $model)\"><ui-select-match placeholder=\"Pick one...\">{{$select.selected}}</ui-select-match><ui-select-choices repeat=\"v as v in filter.values | filter: $select.search track by $index\"><div ng-bind=\"v\"></div></ui-select-choices></ui-select></td><td class=\"middle\"></td></tr></tbody></table></div>");
 }]);
 
 angular.module("babbage-templates/sankey.html", []).run(["$templateCache", function($templateCache) {
@@ -42,7 +42,7 @@ angular.module("babbage-templates/treemap.html", []).run(["$templateCache", func
 
 angular.module("babbage-templates/workspace.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("babbage-templates/workspace.html",
-    "<babbage endpoint=\"{{endpoint}}\" cube=\"{{cube}}\" state=\"state\" update=\"update(state)\"><div class=\"row\"><div class=\"col-md-12\"><div class=\"pull-right\"><div class=\"btn-group spaced\" role=\"group\"><a class=\"btn btn-default\" ng-class=\"{'active': view == 'facts'}\" ng-click=\"setView('facts')\"><i class=\"fa fa-table\"></i> Items</a> <a class=\"btn btn-default\" ng-class=\"{'active': view == 'crosstab'}\" ng-click=\"setView('crosstab')\"><i class=\"fa fa-cubes\"></i> Pivot table</a> <a class=\"btn btn-default\" ng-class=\"{'active': view == 'barchart'}\" ng-click=\"setView('barchart')\"><i class=\"fa fa-bar-chart\"></i> Bar chart</a> <a class=\"btn btn-default\" ng-class=\"{'active': view == 'linechart'}\" ng-click=\"setView('linechart')\"><i class=\"fa fa-line-chart\"></i> Line chart</a> <a class=\"btn btn-default\" ng-class=\"{'active': view == 'treemap'}\" ng-click=\"setView('treemap')\"><i class=\"fa fa-th-large\"></i> Treemap</a> <a class=\"btn btn-default\" ng-class=\"{'active': view == 'sankey'}\" ng-click=\"setView('sankey')\"><i class=\"fa fa-random\"></i> Flow</a></div></div></div></div><div class=\"row\"><div class=\"col-md-9\"><div ng-if=\"view == 'crosstab'\"><babbage-crosstab></babbage-crosstab></div><div ng-if=\"view == 'facts'\"><babbage-facts></babbage-facts></div><div ng-if=\"view == 'treemap'\"><babbage-treemap></babbage-treemap></div><div ng-if=\"view == 'barchart'\"><babbage-chart chart-type=\"bar\"></babbage-chart></div><div ng-if=\"view == 'linechart'\"><babbage-chart chart-type=\"line\"></babbage-chart></div><div ng-if=\"view == 'sankey'\"><babbage-sankey></babbage-sankey></div></div><div class=\"col-md-3\"><babbage-panel></babbage-panel><div class=\"embed-link\"><p class=\"help-block\">Embed this view into another website:</p><div class=\"input-group\"><span class=\"input-group-addon\"><i class=\"fa fa-external-link-square\"></i></span> <input type=\"text\" class=\"form-control\" readonly=\"readonly\" value=\"<style>.babbage-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;} .babbage-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;}</style><div class='babbage-embed'><iframe src='{{embedLink}}' frameborder='0' allowfullscreen></iframe></div>\"></div></div></div></div></babbage>");
+    "<babbage endpoint=\"{{endpoint}}\" cube=\"{{cube}}\" state=\"state\" update=\"update(state)\"><div class=\"row\"><div class=\"col-md-9\"><div ng-if=\"view == 'crosstab'\"><babbage-crosstab></babbage-crosstab></div><div ng-if=\"view == 'facts'\"><babbage-facts></babbage-facts></div><div ng-if=\"view == 'treemap'\"><babbage-treemap></babbage-treemap></div><div ng-if=\"view == 'barchart'\"><babbage-chart chart-type=\"bar\"></babbage-chart></div><div ng-if=\"view == 'linechart'\"><babbage-chart chart-type=\"line\"></babbage-chart></div><div ng-if=\"view == 'sankey'\"><babbage-sankey></babbage-sankey></div></div><div class=\"col-md-3\"><babbage-panel></babbage-panel></div></div></babbage>");
 }]);
 ;var ngBabbage = angular.module('ngBabbage', ['ngBabbage.templates']);
 
@@ -918,6 +918,8 @@ ngBabbage.directive('babbagePanel', ['$rootScope', 'slugifyFilter', function($ro
           axis.selected.splice(i, 1);
           $scope.state[axis.name] = axis.selected;
           $scope.state.order = babbageCtrl.removeSorts(ref);
+          //If switching to new view, reset to only one cut
+          $scope.state.cut = "einnahmeausgabe.einnahmeausgabe:Ausgabe";
           update();
         }
       };
@@ -1015,6 +1017,7 @@ ngBabbage.directive('babbagePanel', ['$rootScope', 'slugifyFilter', function($ro
       };
 
       var getAttributeByRef = function(ref) {
+      console.log($scope.filterAttributes);
         for (var i in $scope.filterAttributes) {
           var attr = $scope.filterAttributes[i];
           if (attr.ref == ref) {
@@ -1025,11 +1028,14 @@ ngBabbage.directive('babbagePanel', ['$rootScope', 'slugifyFilter', function($ro
 
       var loadFilters = function(state) {
         var cuts = asArray(state.cut);
+    
         for (var i in cuts) {
           var cut = cuts[i];
           if (cut.indexOf(':') != -1) {
             var ref = cut.split(':', 1)[0],
                 values = cut.slice(ref.length + 1).split(';');
+            console.log("ref is " + ref);
+            console.log("vals are " + values);
             for (var j in values) {
               $scope.addFilter(getAttributeByRef(ref), values[j]);
             }
@@ -1084,6 +1090,26 @@ ngBabbage.directive('babbagePanel', ['$rootScope', 'slugifyFilter', function($ro
 
       var unsubscribe = babbageCtrl.subscribe(function(event, mdl, state) {
         model = mdl;
+        var desiredstart = "einnahmeausgabe.einnahmeausgabe:Ausgabe";
+        if (typeof(state.cut) == "object") {
+        var notset = true;
+         for (var i = 0; i < state.cut.length; i++) {
+              if (state.cut[i].indexOf("einnahmeausgabe") > -1) {
+                notset = false;
+              }
+            }
+        if (notset) state.cut.push(desiredstart);
+        }
+        else if (typeof(state.cut) == "string") {
+              //Actually this shouldn't be possible; if there's only one then it must be e/a
+              if (state.cut.indexOf("einnahmeausgabe") == -1) {
+                var items = new Array();
+                items.push(state.cut);
+                items.push(desiredstart);
+                state.cut = items;
+              }
+        }
+        else state.cut = desiredstart;
         $scope.state = state;
 
         var options = makeOptions();
@@ -1369,7 +1395,21 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
       q.order = order;
       q.page = 0;
       q.pagesize = 50;
-
+      
+      //console.log(q);
+      /*
+      var notset = true;
+            for (var i = 0; i < q.cut.length; i++) {
+              if (q.cut[i].indexOf("einnahmeausgabe") > -1) {
+                notset = false;
+              }
+            }
+            if (notset) {
+              q.cut.push("einnahmeausgabe.einnahmeausgabe:Ausgabe");
+            }
+      */
+      //console.log(q);
+      
       scope.cutoffWarning = false;
       scope.queryLoaded = true;
       var dfd = $http.get(babbageCtrl.getApiUrl('aggregate'),
@@ -1396,6 +1436,37 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
     };
 
     var queryResult = function(data, q, model, state) {
+      console.log(state);
+      
+
+      var drilldown = q.drilldown && q.drilldown.split("\.");
+      if (drilldown && drilldown.length > 0) {
+        drilldown = drilldown[0];
+      }
+      var next = undefined;
+      switch (drilldown) {
+        //case "einnahmeausgabe":
+          //next = "einzelplan.einzelplanbezeichnung";
+          //break;
+        case "einzelplan":
+          next = "kapitel.kapitelbezeichnung";
+          break;
+        case "kapitel":
+          next = "zweckbestimmung.zweckbestimmung";
+          break;
+        case "hauptgruppe":
+          next = "obergruppe.obergruppenbezeichnung";
+          break;
+        case "obergruppe":
+          next = "gruppe.gruppenbezeichnung";
+          break;
+        case "hauptfunktion":
+          next = "oberfunktion.oberfunktionbezeichnung";
+          break;
+        case "oberfunktion":
+          next = "funktion.funktionbezeichnung";
+          break;
+      }
       var tileRef = asArray(state.tile)[0],
           areaRef = asArray(state.area)[0],
           areaRef = areaRef ? [areaRef] : defaultArea(model);
@@ -1410,12 +1481,13 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
         cell._name = cell[tileRef];
         cell._color = ngBabbageGlobals.colorScale(i);
         cell._percentage = cell[areaRef] / Math.max(data.summary[areaRef], 1);
+        //cell.href="rlp-test-import?view=treemap&tile=" + next + "&order=";
         root.children.push(cell);
       };
 
       var node = div.datum(root).selectAll(".node")
           .data(treemap.nodes)
-        .enter().append("a")
+          .enter().append("a")
           .attr("href", function(d){ return d.href; })
           .attr("class", "node")
           .call(positionNode)
@@ -1433,6 +1505,17 @@ ngBabbage.directive('babbageTreemap', ['$rootScope', '$http', '$document', funct
           .on("mouseout", function(d) {
             d3.select(this).transition().duration(500)
               .style({'background': d._color});
+          })
+          .on("click", function(d) {
+            if (typeof(state.cut) == "object") state.cut.push(state.tile + ":" + d[state.tile]);
+            else if (typeof(state.cut) == "string") {
+              var items = new Array();
+              items.push(state.cut);
+              items.push(state.tile + ":" + d[state.tile]);
+              state.cut = items;
+            }
+            state.tile = next;
+            query(model, state);
           })
           .transition()
           .duration(500)
